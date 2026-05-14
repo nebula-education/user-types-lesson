@@ -1,0 +1,2346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Understanding Client Personas · Nebula Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Questrial&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0c1118;
+  --navy2:#141d2b;
+  --cream:#f0ebe0;
+  --cream-70:rgba(240,235,224,0.70);
+  --cream-40:rgba(240,235,224,0.40);
+  --cream-18:rgba(240,235,224,0.18);
+  --cream-10:rgba(240,235,224,0.10);
+  --cream-06:rgba(240,235,224,0.06);
+  --purple:#7B6FE8;
+  --purple-light:rgba(123,111,232,0.18);
+  --purple-dim:rgba(123,111,232,0.10);
+  --coral:#E8604C;
+  --coral-light:rgba(232,96,76,0.18);
+  --coral-dim:rgba(232,96,76,0.10);
+  --cyan:#4FC3F7;
+  --cyan-light:rgba(79,195,247,0.18);
+  --cyan-dim:rgba(79,195,247,0.10);
+  --magenta:#E040FB;
+  --green:#6FFFB0;
+  --green-light:rgba(111,255,176,0.18);
+  --green-dim:rgba(111,255,176,0.10);
+  --gold:#FFD54F;
+  --gold-light:rgba(255,213,79,0.18);
+  --bg-1:#05020f;
+  --bg-2:#0c0620;
+  --bg-3:#15093a;
+  --bg-4:#1c0e4d;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 28%, var(--bg-3) 65%, var(--bg-4) 100%);
+  background-attachment:fixed;
+  color:var(--cream);
+  font-family:'Questrial',sans-serif;
+  font-size:16px;
+  line-height:1.75;
+  overflow-x:hidden;
+  min-height:100vh;
+}
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(900px 500px at 88% 12%, rgba(255,107,157,0.10), transparent 60%),
+    radial-gradient(1100px 600px at 10% 90%, rgba(79,195,247,0.08), transparent 60%);
+  pointer-events:none;
+  z-index:0;
+}
+
+h1,h2,h3,.when-label,.ex-q{font-family:'Lora',serif;}
+h1{font-size:clamp(2.4rem,6vw,4.5rem);font-weight:700;line-height:1.05;letter-spacing:-0.02em}
+h2{font-size:clamp(1.7rem,3.5vw,2.7rem);font-weight:700;line-height:1.15;letter-spacing:-0.01em}
+h3{font-size:clamp(1.1rem,2vw,1.5rem);font-weight:600;line-height:1.25}
+
+em,i{font-style:italic}
+
+/* ============ TOP NAV ============ */
+.top-nav{
+  position:fixed;top:0;left:0;right:0;z-index:50;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:14px 36px;
+  background:rgba(5,2,15,0.88);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(240,235,224,0.10);
+  font-family:'Questrial',sans-serif;
+}
+.brand{
+  display:flex;align-items:center;gap:14px;
+  color:var(--cream);
+  flex-shrink:0;
+}
+.brand-logo{
+  height:34px;
+  width:auto;
+  display:block;
+}
+.nav-links{
+  display:flex;align-items:center;gap:6px;
+  flex-wrap:wrap;
+}
+.nav-link{
+  background:transparent;border:none;color:var(--cream-70);
+  font-family:'Questrial',sans-serif;
+  font-size:0.84rem;
+  letter-spacing:0.06em;
+  padding:8px 14px;
+  border-radius:999px;
+  cursor:pointer;
+  transition:all 0.3s ease;
+  white-space:nowrap;
+}
+.nav-link:hover{color:var(--cream);background:rgba(240,235,224,0.06)}
+.nav-link.active{
+  color:var(--cream);
+  background:rgba(123,111,232,0.25);
+  border:1px solid var(--purple);
+}
+.nav-right{display:flex;align-items:center;gap:14px;flex-shrink:0}
+.score-pill{
+  display:flex;align-items:center;gap:10px;
+  padding:7px 16px;
+  background:rgba(123,111,232,0.18);
+  border:1px solid var(--purple);
+  border-radius:999px;
+  font-size:0.82rem;
+  color:var(--cream);
+  letter-spacing:0.04em;
+}
+.score-pill .star{color:var(--gold);font-size:0.95rem}
+.score-pill .num{font-family:'Lora',serif;font-weight:700;color:var(--cream)}
+.score-pill .total{color:var(--cream-40)}
+
+.fs-btn{
+  display:flex;align-items:center;justify-content:center;
+  width:38px;height:38px;
+  background:rgba(240,235,224,0.05);
+  border:1px solid rgba(240,235,224,0.18);
+  border-radius:10px;
+  color:var(--cream-70);
+  cursor:pointer;
+  transition:all 0.3s ease;
+}
+.fs-btn:hover{
+  background:rgba(123,111,232,0.18);
+  border-color:var(--purple);
+  color:var(--cream);
+}
+.fs-btn svg{display:block}
+
+/* ============ LAYOUT ============ */
+.section{
+  position:relative;z-index:1;
+  padding:110px 36px 90px;
+  max-width:1240px;margin:0 auto;
+}
+.section-inner{max-width:1100px;margin:0 auto}
+
+.kicker{
+  font-family:'Questrial',sans-serif;
+  font-size:0.78rem;letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--cream-40);
+  margin-bottom:18px;
+}
+
+.hero{
+  min-height:90vh;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:140px 36px 80px;
+  max-width:1240px;margin:0 auto;
+  position:relative;z-index:1;
+}
+.hero h1{
+  margin-bottom:24px;
+}
+.hero h1 .accent{
+  color:var(--purple);
+  font-style:italic;
+  font-weight:600;
+  text-shadow:0 4px 30px rgba(123,111,232,0.45);
+}
+.hero-lead{
+  font-size:clamp(1.05rem,1.8vw,1.32rem);
+  color:var(--cream-70);
+  max-width:740px;
+  line-height:1.6;
+  margin-bottom:36px;
+}
+
+.hero-cta-wrap{
+  display:flex;align-items:center;gap:20px;
+  flex-wrap:wrap;
+  margin-top:8px;
+}
+.hero-cta{
+  display:inline-flex;align-items:center;gap:14px;
+  padding:18px 32px;
+  background:linear-gradient(135deg, #FF6B9D 0%, #B554E8 50%, #7B6FE8 100%);
+  border:none;
+  border-radius:999px;
+  color:#fff;
+  font-family:'Questrial',sans-serif;
+  font-size:1.02rem;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  font-weight:600;
+  cursor:pointer;
+  box-shadow:0 12px 40px rgba(123,111,232,0.50), 0 0 0 1px rgba(255,255,255,0.10) inset;
+  transition:transform 0.3s ease, box-shadow 0.3s ease;
+  position:relative;
+  overflow:hidden;
+}
+.hero-cta::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.20) 50%, transparent 70%);
+  transform:translateX(-100%);
+  transition:transform 0.7s ease;
+}
+.hero-cta:hover{
+  transform:translateY(-3px);
+  box-shadow:0 18px 50px rgba(255,107,157,0.55), 0 0 0 1px rgba(255,255,255,0.18) inset;
+}
+.hero-cta:hover::before{transform:translateX(100%)}
+.hero-cta svg{display:block;transition:transform 0.3s ease}
+.hero-cta:hover svg{transform:translateX(4px)}
+.hero-cta-hint{
+  font-size:0.82rem;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--cream-40);
+}
+
+/* ============ FADE ANIMATION ============ */
+.fade{opacity:0;transform:translateY(28px);transition:opacity 0.9s ease, transform 0.9s ease}
+.fade.in{opacity:1;transform:translateY(0)}
+
+/* ============ CONCEPT BOX ============ */
+.concept-box{
+  background:linear-gradient(135deg,rgba(240,235,224,0.07),transparent);
+  border-left:3px solid var(--purple);
+  padding:28px 34px;
+  margin:36px 0;
+  border-radius:6px;
+  position:relative;
+}
+.concept-box::before{
+  content:"\201C";
+  position:absolute;top:-10px;left:18px;
+  font-family:'Lora',serif;font-size:5rem;
+  color:var(--purple);opacity:0.4;
+  line-height:1;
+}
+.concept-box p{
+  font-family:'Lora',serif;font-style:italic;
+  font-size:clamp(1.05rem,1.6vw,1.28rem);
+  line-height:1.6;color:var(--cream);
+}
+.concept-box.coral{border-color:var(--coral)}
+.concept-box.coral::before{color:var(--coral)}
+.concept-box.green{border-color:var(--green)}
+.concept-box.green::before{color:var(--green)}
+.concept-box.gold{border-color:var(--gold)}
+.concept-box.gold::before{color:var(--gold)}
+
+/* ============ TRIO CARDS (new motivation visual) ============ */
+.trio-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+  margin:36px 0;
+}
+.trio{
+  padding:26px 22px 24px;
+  border-radius:14px;
+  position:relative;
+  overflow:hidden;
+  text-align:center;
+  transition:transform 0.4s ease;
+}
+.trio:hover{transform:translateY(-4px)}
+.trio.t-feel{background:linear-gradient(180deg, rgba(123,111,232,0.30), rgba(123,111,232,0.05));border:1px solid var(--purple)}
+.trio.t-heal{background:linear-gradient(180deg, rgba(232,96,76,0.28), rgba(232,96,76,0.04));border:1px solid var(--coral)}
+.trio.t-know{background:linear-gradient(180deg, rgba(111,255,176,0.20), rgba(111,255,176,0.03));border:1px solid var(--green)}
+.trio-tag{
+  display:inline-block;
+  font-size:0.7rem;letter-spacing:0.22em;text-transform:uppercase;
+  padding:4px 12px;border-radius:999px;
+  font-weight:600;
+  margin-bottom:14px;
+}
+.t-feel .trio-tag{background:var(--purple);color:#fff}
+.t-heal .trio-tag{background:var(--coral);color:#fff}
+.t-know .trio-tag{background:var(--green);color:var(--navy)}
+.trio-emoji{font-size:2.4rem;line-height:1;margin-bottom:8px;display:block}
+.trio h4{
+  font-family:'Lora',serif;font-weight:700;
+  font-size:1.18rem;margin-bottom:8px;color:var(--cream);
+}
+.t-feel h4{color:#a99dff}
+.t-heal h4{color:#ff8e7a}
+.t-know h4{color:#9fffce}
+.trio-sub{
+  font-size:0.78rem;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--cream-70);margin-bottom:14px;
+}
+.trio p{font-size:0.93rem;color:var(--cream);line-height:1.55}
+
+/* ============ STEP LIST ============ */
+.step-list{
+  margin:32px 0;
+  display:flex;flex-direction:column;gap:18px;
+}
+.step{
+  display:flex;gap:22px;
+  padding:22px 26px;
+  background:rgba(240,235,224,0.06);
+  border:1px solid rgba(240,235,224,0.10);
+  border-radius:12px;
+  transition:all 0.4s ease;
+}
+.step:hover{
+  background:rgba(240,235,224,0.10);
+  transform:translateX(6px);
+  border-color:var(--purple);
+}
+.step-num{
+  flex-shrink:0;
+  width:42px;height:42px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--purple),var(--cyan));
+  font-family:'Lora',serif;font-weight:700;
+  color:var(--navy);
+  font-size:1.1rem;
+}
+.step-content h4{
+  font-family:'Lora',serif;font-weight:600;
+  font-size:1.05rem;margin-bottom:6px;color:var(--cream);
+}
+.step-content p{color:var(--cream-70);font-size:0.96rem;line-height:1.6}
+
+/* ============ FLASH CARDS ============ */
+.flash-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+  margin:36px 0;
+}
+.flash-card{
+  background:rgba(240,235,224,0.06);
+  border:1px solid rgba(240,235,224,0.10);
+  border-radius:14px;
+  cursor:pointer;
+  perspective:1000px;
+  min-height:240px;
+  position:relative;
+  transition:transform 0.6s;
+  transform-style:preserve-3d;
+}
+.flash-card.flipped{transform:rotateY(180deg)}
+.flash-face{
+  position:absolute;inset:0;
+  padding:26px 22px;
+  backface-visibility:hidden;
+  display:flex;flex-direction:column;justify-content:space-between;
+  border-radius:14px;
+}
+.flash-back{
+  transform:rotateY(180deg);
+  background:linear-gradient(135deg, rgba(123,111,232,0.18), rgba(240,235,224,0.06));
+  border:1px solid rgba(240,235,224,0.18);
+}
+.flash-glyph{
+  font-size:2.4rem;line-height:1;
+}
+.flash-front h4{
+  font-family:'Lora',serif;font-weight:600;
+  font-size:1.2rem;color:var(--cream);margin-bottom:8px;
+}
+.flash-front p{color:var(--cream-70);font-size:0.92rem;line-height:1.5}
+.flash-hint{
+  font-size:0.7rem;letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--cream-40);
+  align-self:flex-end;
+}
+.flash-back h5{
+  font-family:'Lora',serif;font-weight:600;
+  font-size:0.98rem;color:var(--cyan);margin-bottom:10px;
+  letter-spacing:0.04em;
+}
+.flash-back p{color:var(--cream);font-size:0.93rem;line-height:1.55}
+
+/* ============ TIMELINE SCHEME (FEEL/HEAL/KNOW where pain lives) ============ */
+.timeline-scheme{
+  margin:40px 0 20px;
+  padding:32px 28px;
+  background:rgba(240,235,224,0.04);
+  border:1px solid rgba(240,235,224,0.10);
+  border-radius:14px;
+}
+.timeline-title{
+  font-family:'Lora',serif;font-weight:600;font-style:italic;
+  font-size:1.05rem;color:var(--cream);text-align:center;margin-bottom:24px;
+}
+.timeline-bar{
+  position:relative;
+  height:80px;
+  display:flex;
+  align-items:center;
+  margin:0 20px;
+}
+.timeline-line{
+  position:absolute;left:0;right:0;top:50%;height:2px;
+  background:linear-gradient(90deg,var(--coral),var(--green),var(--purple));
+  transform:translateY(-50%);
+  border-radius:1px;
+}
+.timeline-marker{
+  position:relative;
+  flex:1;
+  text-align:center;
+  z-index:1;
+}
+.tm-dot{
+  width:18px;height:18px;border-radius:50%;
+  margin:0 auto 10px;
+  box-shadow:0 0 0 6px rgba(5,2,15,1);
+  display:block;
+}
+.tm-feel .tm-dot{background:var(--purple);box-shadow:0 0 0 6px rgba(5,2,15,1), 0 0 18px var(--purple)}
+.tm-heal .tm-dot{background:var(--coral);box-shadow:0 0 0 6px rgba(5,2,15,1), 0 0 18px var(--coral)}
+.tm-know .tm-dot{background:var(--green);box-shadow:0 0 0 6px rgba(5,2,15,1), 0 0 18px var(--green)}
+.tm-label{
+  font-family:'Lora',serif;font-weight:700;
+  font-size:0.9rem;
+  letter-spacing:0.06em;
+}
+.tm-heal .tm-label{color:var(--coral)}
+.tm-know .tm-label{color:var(--green)}
+.tm-feel .tm-label{color:var(--purple)}
+.tm-when{
+  font-family:'Questrial',sans-serif;
+  font-size:0.72rem;letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--cream-40);margin-top:4px;
+}
+
+/* ============ PERSONA ROW CARDS ============ */
+.persona-rows{margin:48px 0;display:flex;flex-direction:column;gap:36px}
+.persona-row{
+  border-radius:22px;
+  overflow:hidden;
+  background:rgba(240,235,224,0.04);
+  border:1px solid rgba(240,235,224,0.10);
+  transition:border-color 0.4s ease, box-shadow 0.4s ease;
+}
+.persona-row.purple{border-color:rgba(123,111,232,0.35)}
+.persona-row.purple:hover{border-color:var(--purple);box-shadow:0 18px 50px rgba(123,111,232,0.22)}
+.persona-row.coral{border-color:rgba(232,96,76,0.35)}
+.persona-row.coral:hover{border-color:var(--coral);box-shadow:0 18px 50px rgba(232,96,76,0.22)}
+.persona-row.green{border-color:rgba(111,255,176,0.35)}
+.persona-row.green:hover{border-color:var(--green);box-shadow:0 18px 50px rgba(111,255,176,0.18)}
+
+.persona-top{
+  display:grid;
+  grid-template-columns:340px 1fr;
+}
+.persona-hero{
+  padding:36px 30px;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  text-align:center;
+  position:relative;
+  border-right:1px solid rgba(240,235,224,0.10);
+}
+.persona-row.purple .persona-hero{background:radial-gradient(circle at 50% 30%, rgba(123,111,232,0.25), transparent 70%)}
+.persona-row.coral .persona-hero{background:radial-gradient(circle at 50% 30%, rgba(232,96,76,0.22), transparent 70%)}
+.persona-row.green .persona-hero{background:radial-gradient(circle at 50% 30%, rgba(111,255,176,0.18), transparent 70%)}
+
+.persona-glyph-wrap{
+  width:130px;height:130px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:18px;
+  position:relative;
+}
+.persona-row.purple .persona-glyph-wrap{background:rgba(123,111,232,0.20);border:2px solid var(--purple);box-shadow:0 0 30px rgba(123,111,232,0.35)}
+.persona-row.coral .persona-glyph-wrap{background:rgba(232,96,76,0.20);border:2px solid var(--coral);box-shadow:0 0 30px rgba(232,96,76,0.35)}
+.persona-row.green .persona-glyph-wrap{background:rgba(111,255,176,0.16);border:2px solid var(--green);box-shadow:0 0 30px rgba(111,255,176,0.30)}
+.persona-glyph{font-size:4rem;line-height:1}
+
+.persona-badge{
+  display:inline-block;
+  padding:6px 14px;
+  border-radius:999px;
+  font-size:0.7rem;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  font-weight:600;
+  margin-bottom:12px;
+}
+.persona-row.purple .persona-badge{background:var(--purple);color:#fff}
+.persona-row.coral .persona-badge{background:var(--coral);color:#fff}
+.persona-row.green .persona-badge{background:var(--green);color:var(--navy)}
+
+.persona-name{
+  font-family:'Lora',serif;font-weight:700;
+  font-size:1.7rem;
+  margin-bottom:6px;
+  color:var(--cream);
+}
+.persona-row.purple .persona-name{color:#bfb6ff}
+.persona-row.coral .persona-name{color:#ff9883}
+.persona-row.green .persona-name{color:#a5ffd2}
+
+.persona-tag{
+  font-family:'Lora',serif;font-style:italic;
+  color:var(--cream-70);font-size:1rem;
+  margin-top:2px;
+}
+.persona-mini-time{
+  margin-top:18px;
+  font-family:'Questrial',sans-serif;
+  font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--cream-40);
+}
+.persona-mini-time strong{color:var(--gold);font-weight:600}
+
+.persona-quadrants{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0;
+  padding:0;
+}
+.q-cell{
+  padding:24px 28px;
+  border-bottom:1px solid rgba(240,235,224,0.10);
+  border-right:1px solid rgba(240,235,224,0.10);
+}
+.q-cell:nth-child(2n){border-right:none}
+.q-cell:nth-last-child(-n+2){border-bottom:none}
+.q-icon{
+  display:flex;align-items:center;gap:10px;
+  font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--cream-40);
+  margin-bottom:10px;
+  font-weight:600;
+}
+.q-icon-glyph{font-size:1.1rem;line-height:1}
+.q-cell p{font-size:0.96rem;color:var(--cream);line-height:1.6}
+.q-cell em{color:var(--gold);font-weight:600;font-style:italic}
+
+.persona-row.purple .q-icon{color:#a99dff}
+.persona-row.coral .q-icon{color:#ff8e7a}
+.persona-row.green .q-icon{color:#9fffce}
+
+.persona-toggle{
+  width:100%;
+  background:rgba(240,235,224,0.04);
+  border:none;
+  border-top:1px solid rgba(240,235,224,0.10);
+  color:var(--cream);
+  padding:18px 24px;
+  font-family:'Questrial',sans-serif;
+  font-size:0.84rem;letter-spacing:0.14em;text-transform:uppercase;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  transition:background 0.3s ease;
+}
+.persona-toggle:hover{background:rgba(240,235,224,0.08)}
+.persona-toggle .arr{display:inline-block;transition:transform 0.4s ease}
+.persona-row.open .persona-toggle .arr{transform:rotate(180deg)}
+
+.persona-detail{
+  max-height:0;overflow:hidden;
+  transition:max-height 0.7s ease;
+}
+.persona-row.open .persona-detail{max-height:1400px}
+.persona-detail-inner{
+  padding:28px 32px 32px;
+  border-top:1px dashed rgba(240,235,224,0.18);
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:24px;
+}
+.signals-block{}
+.when-label{
+  display:block;
+  font-family:'Lora',serif;font-weight:600;font-style:italic;
+  font-size:1rem;
+  color:var(--gold);
+  margin-bottom:12px;
+}
+.signal-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+.signal-list li{
+  font-family:'Lora',serif;font-style:italic;
+  font-size:0.95rem;
+  color:var(--cream);
+  padding:10px 16px;
+  background:rgba(240,235,224,0.05);
+  border-left:2px solid var(--gold);
+  border-radius:0 6px 6px 0;
+  line-height:1.5;
+}
+.dos-donts{display:flex;flex-direction:column;gap:14px}
+.dos,.donts{padding:16px 18px;border-radius:10px;font-size:0.9rem;line-height:1.55}
+.dos{background:rgba(111,255,176,0.08);border:1px solid rgba(111,255,176,0.4);color:var(--cream)}
+.donts{background:rgba(232,96,76,0.08);border:1px solid rgba(232,96,76,0.4);color:var(--cream)}
+.dos h5,.donts h5{
+  font-family:'Lora',serif;font-weight:600;font-size:0.92rem;margin-bottom:8px;
+  letter-spacing:0.04em;
+}
+.dos h5{color:var(--green)}
+.donts h5{color:var(--coral)}
+.dos ul,.donts ul{list-style:none;padding-left:0}
+.dos li,.donts li{padding:3px 0 3px 18px;position:relative;font-size:0.88rem}
+.dos li::before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:700}
+.donts li::before{content:"✗";position:absolute;left:0;color:var(--coral);font-weight:700}
+
+/* ============ COMPARE GRID ============ */
+.compare-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:22px;
+  margin:36px 0;
+}
+.compare-col{
+  border-radius:14px;
+  padding:28px 26px;
+  border:1px solid rgba(240,235,224,0.10);
+  position:relative;
+}
+.compare-col.cyan{
+  background:linear-gradient(180deg, rgba(79,195,247,0.16), transparent);
+  border-color:var(--cyan);
+}
+.compare-col.green{
+  background:linear-gradient(180deg, rgba(111,255,176,0.14), transparent);
+  border-color:var(--green);
+}
+.compare-label{
+  font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;
+  font-weight:600;
+  margin-bottom:10px;
+}
+.compare-col.cyan .compare-label{color:var(--cyan)}
+.compare-col.green .compare-label{color:var(--green)}
+.compare-col h3{
+  margin-bottom:14px;
+  color:var(--cream);
+}
+.compare-col p{color:var(--cream);font-size:0.96rem;line-height:1.65;margin-bottom:14px}
+.compare-col ul{list-style:none;margin-top:12px}
+.compare-col li{
+  padding:6px 0 6px 22px;
+  position:relative;
+  color:var(--cream-70);
+  font-size:0.92rem;
+}
+.compare-col.cyan li::before{content:"✗";position:absolute;left:0;color:var(--cyan)}
+.compare-col.green li::before{content:"✓";position:absolute;left:0;color:var(--green)}
+
+/* ============ EX BLOCK ============ */
+.ex-block{
+  margin:46px 0;
+  padding:30px 32px;
+  background:rgba(240,235,224,0.04);
+  border:1px solid rgba(240,235,224,0.10);
+  border-radius:16px;
+}
+.ex-q{
+  font-size:1.2rem;
+  color:var(--cream);
+  margin-bottom:20px;
+  font-style:italic;
+  font-weight:600;
+  line-height:1.4;
+}
+.ex-cards{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+  margin-bottom:20px;
+}
+.ex-card{
+  background:rgba(20,29,43,0.7);
+  border:1px solid rgba(240,235,224,0.10);
+  border-radius:12px;
+  overflow:hidden;
+  cursor:pointer;
+  transition:all 0.4s ease;
+  position:relative;
+}
+.ex-card:hover{
+  border-color:rgba(240,235,224,0.40);
+  transform:translateY(-3px);
+}
+.ex-art{
+  aspect-ratio:3/3.8;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:16px;
+  position:relative;
+  background:radial-gradient(circle at 50% 40%, rgba(240,235,224,0.10), transparent 60%);
+  transition:opacity 0.4s ease;
+}
+.ex-card.open .ex-art{opacity:0.15}
+.ex-emoji{font-size:3rem;line-height:1;margin-bottom:10px}
+.ex-name{
+  font-family:'Lora',serif;font-weight:600;font-size:1.05rem;
+  color:var(--cream);text-align:center;margin-bottom:8px;
+}
+.ex-card .persona-badge{font-size:0.62rem;padding:3px 10px;margin-bottom:0}
+.ex-hint{
+  position:absolute;bottom:14px;left:0;right:0;text-align:center;
+  font-size:0.68rem;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--cream-40);
+}
+.ex-info{
+  position:absolute;inset:0;
+  padding:20px 18px;
+  display:flex;flex-direction:column;justify-content:center;
+  opacity:0;transition:opacity 0.5s ease 0.1s;
+  background:linear-gradient(135deg, rgba(20,29,43,0.95), rgba(123,111,232,0.20));
+}
+.ex-card.open .ex-info{opacity:1}
+.ex-meaning{
+  font-family:'Lora',serif;font-weight:700;
+  color:var(--gold);
+  font-size:0.92rem;letter-spacing:0.04em;
+  margin-bottom:10px;
+  display:block;
+}
+.ex-info p{font-size:0.88rem;line-height:1.55;color:var(--cream)}
+
+.synth-btn{
+  margin:20px auto 0;
+  display:flex;align-items:center;gap:10px;
+  background:transparent;
+  border:1px solid rgba(240,235,224,0.18);
+  color:var(--cream-70);
+  padding:11px 22px;
+  border-radius:999px;
+  cursor:pointer;
+  font-family:'Questrial',sans-serif;
+  font-size:0.84rem;letter-spacing:0.1em;text-transform:uppercase;
+  transition:all 0.3s ease;
+}
+.synth-btn:hover{color:var(--cream);border-color:var(--cream)}
+.synth-btn .arr{transition:transform 0.4s ease}
+.synth-btn.shown .arr{transform:rotate(180deg)}
+
+.synth-box{
+  max-height:0;overflow:hidden;
+  transition:max-height 0.6s ease, padding 0.4s ease, opacity 0.4s ease;
+  background:rgba(240,235,224,0.06);
+  border-radius:12px;
+  margin-top:0;
+  opacity:0;
+  padding:0 24px;
+}
+.synth-box.vis{
+  max-height:600px;
+  margin-top:18px;
+  padding:22px 24px;
+  opacity:1;
+  border:1px solid var(--purple);
+}
+.synth-box h5{
+  font-family:'Lora',serif;font-weight:600;font-size:1rem;
+  color:var(--purple);margin-bottom:10px;
+  letter-spacing:0.04em;
+}
+.synth-box p{color:var(--cream);font-size:0.96rem;line-height:1.6}
+
+/* ============ KNOWLEDGE CHECK ============ */
+.kc-block{
+  margin:40px 0;
+  padding:32px 34px;
+  background:linear-gradient(135deg, rgba(123,111,232,0.12), transparent);
+  border:1px solid rgba(123,111,232,0.4);
+  border-radius:16px;
+}
+.kc-label{
+  display:inline-block;
+  font-size:0.72rem;letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--purple);font-weight:600;
+  margin-bottom:12px;
+  padding:5px 13px;
+  border:1px solid var(--purple);
+  border-radius:999px;
+  background:rgba(123,111,232,0.18);
+}
+.kc-points{
+  float:right;
+  font-family:'Lora',serif;font-style:italic;
+  font-size:0.84rem;color:var(--gold);
+  margin-top:4px;
+}
+.kc-q{
+  font-family:'Lora',serif;font-weight:600;
+  font-size:1.15rem;
+  color:var(--cream);
+  margin-bottom:20px;
+  line-height:1.4;
+  clear:both;
+}
+.kc-options{display:flex;flex-direction:column;gap:10px}
+.kc-opt{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:14px 18px;
+  background:rgba(240,235,224,0.06);
+  border:1px solid rgba(240,235,224,0.10);
+  border-radius:10px;
+  cursor:pointer;
+  transition:all 0.3s ease;
+  text-align:left;
+  font-family:'Questrial',sans-serif;
+  color:var(--cream);
+  font-size:0.96rem;
+  line-height:1.5;
+  width:100%;
+}
+.kc-opt:hover:not(.right):not(.wrong){
+  border-color:rgba(240,235,224,0.40);
+  background:rgba(240,235,224,0.10);
+}
+.kc-opt-letter{
+  flex-shrink:0;
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(240,235,224,0.10);
+  font-family:'Lora',serif;font-weight:600;font-size:0.85rem;
+  color:var(--cream-70);
+  transition:all 0.3s ease;
+}
+.kc-opt.right{
+  border-color:var(--green);
+  background:rgba(111,255,176,0.12);
+}
+.kc-opt.right .kc-opt-letter{background:var(--green);color:var(--navy)}
+.kc-opt.wrong{
+  border-color:var(--coral);
+  background:rgba(232,96,76,0.12);
+}
+.kc-opt.wrong .kc-opt-letter{background:var(--coral);color:var(--navy)}
+.kc-feedback{
+  margin-top:18px;
+  padding:16px 20px;
+  border-radius:10px;
+  display:none;
+  font-size:0.95rem;line-height:1.6;
+}
+.kc-feedback.vis{display:block}
+.kc-feedback.success{
+  background:rgba(111,255,176,0.10);
+  border-left:3px solid var(--green);
+  color:var(--cream);
+}
+.kc-feedback.fail{
+  background:rgba(232,96,76,0.10);
+  border-left:3px solid var(--coral);
+  color:var(--cream);
+}
+.kc-feedback strong{color:var(--gold);font-family:'Lora',serif}
+
+/* ============ MATCH GAME ============ */
+.match-block{
+  margin:40px 0;
+  padding:34px;
+  background:linear-gradient(135deg, rgba(255,213,79,0.10), transparent);
+  border:1px solid rgba(255,213,79,0.5);
+  border-radius:16px;
+}
+.match-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:30px;
+  margin-top:24px;
+}
+.match-col h4{
+  font-family:'Lora',serif;font-weight:600;
+  font-size:0.78rem;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--cream-40);
+  margin-bottom:14px;
+}
+.match-list{display:flex;flex-direction:column;gap:10px}
+.match-item{
+  padding:14px 18px;
+  background:rgba(20,29,43,0.85);
+  border:1px solid rgba(240,235,224,0.20);
+  color:var(--cream);
+  border-radius:10px;
+  cursor:pointer;
+  font-size:0.94rem;
+  font-family:'Questrial',sans-serif;
+  text-align:left;
+  width:100%;
+  transition:all 0.3s ease;
+  line-height:1.5;
+}
+.match-item:hover:not(.matched){
+  background:rgba(20,29,43,1);
+  border-color:rgba(255,213,79,0.6);
+}
+.match-item.selected{
+  border-color:var(--gold);
+  background:rgba(255,213,79,0.18);
+  color:var(--cream);
+  box-shadow:0 0 0 2px rgba(255,213,79,0.30);
+  transform:scale(1.02);
+}
+.match-item.matched{
+  opacity:0.75;
+  cursor:default;
+  border-color:var(--green);
+  background:rgba(111,255,176,0.12);
+  color:var(--cream);
+}
+.match-item.wrong{
+  border-color:var(--coral);
+  background:rgba(232,96,76,0.18);
+  animation:shake 0.5s ease;
+}
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-6px)}
+  75%{transform:translateX(6px)}
+}
+.match-status{
+  margin-top:18px;text-align:center;
+  font-family:'Lora',serif;font-style:italic;
+  color:var(--cream-70);font-size:0.95rem;
+  min-height:24px;
+}
+.match-status.complete{color:var(--green);font-weight:600;font-size:1.05rem}
+
+/* ============ SCENARIO (persona identification) ============ */
+.scenario-block{
+  margin:40px 0;
+  padding:34px;
+  background:linear-gradient(135deg, rgba(232,96,76,0.10), transparent);
+  border:1px solid rgba(232,96,76,0.40);
+  border-radius:16px;
+}
+.scenario-card{
+  margin-top:12px;
+  margin-bottom:24px;
+  padding:22px 26px;
+  background:rgba(12,8,28,0.75);
+  border-radius:14px;
+  border:1px solid rgba(240,235,224,0.10);
+  border-left:3px solid var(--coral);
+}
+.scenario-meta-line{
+  display:flex;align-items:center;gap:10px;
+  font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--cream-40);
+  margin-bottom:12px;
+  font-weight:600;
+}
+.scenario-dot{
+  width:8px;height:8px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 10px var(--green);
+}
+.scenario-msg{
+  font-family:'Lora',serif;font-style:italic;
+  font-size:clamp(1rem,1.4vw,1.12rem);
+  line-height:1.6;
+  color:var(--cream);
+}
+.scenario-options{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:14px;
+}
+.scenario-opt{
+  display:flex;align-items:center;gap:14px;
+  padding:18px 18px;
+  background:rgba(12,8,28,0.70);
+  border:1px solid rgba(240,235,224,0.15);
+  color:var(--cream);
+  border-radius:12px;
+  cursor:pointer;
+  text-align:left;
+  font-family:'Questrial',sans-serif;
+  transition:all 0.3s ease;
+  width:100%;
+}
+.scenario-opt:hover:not(.right):not(.wrong){
+  border-color:rgba(240,235,224,0.40);
+  background:rgba(12,8,28,0.95);
+  transform:translateY(-3px);
+}
+.scenario-opt-emoji{font-size:1.9rem;line-height:1;flex-shrink:0}
+.scenario-opt-text{display:flex;flex-direction:column;gap:2px}
+.scenario-opt-name{
+  font-family:'Lora',serif;font-weight:700;font-size:1rem;
+  letter-spacing:0.08em;
+  color:var(--cream);
+}
+.scenario-opt-sub{
+  font-size:0.76rem;color:var(--cream-70);
+}
+.scenario-opt.right{
+  border-color:var(--green);
+  background:rgba(111,255,176,0.14);
+  box-shadow:0 0 0 2px rgba(111,255,176,0.20);
+}
+.scenario-opt.wrong{
+  border-color:var(--coral);
+  background:rgba(232,96,76,0.14);
+}
+
+/* ============ TRUE/FALSE ============ */
+.tf-block{
+  margin:36px 0;
+  padding:28px 32px;
+  background:rgba(79,195,247,0.06);
+  border:1px solid rgba(79,195,247,0.4);
+  border-radius:14px;
+}
+.tf-q{
+  font-family:'Lora',serif;font-weight:600;font-size:1.1rem;
+  color:var(--cream);margin-bottom:16px;line-height:1.5;
+}
+.tf-buttons{display:flex;gap:14px;margin-bottom:14px}
+.tf-btn{
+  flex:1;
+  padding:14px 22px;
+  background:rgba(240,235,224,0.06);
+  border:1px solid rgba(240,235,224,0.18);
+  color:var(--cream);
+  border-radius:10px;
+  cursor:pointer;
+  font-family:'Questrial',sans-serif;
+  font-size:0.96rem;letter-spacing:0.06em;
+  transition:all 0.3s ease;
+}
+.tf-btn:hover{border-color:rgba(240,235,224,0.40)}
+.tf-btn.right{
+  border-color:var(--green);
+  background:rgba(111,255,176,0.12);
+  color:var(--cream);
+}
+.tf-btn.wrong{
+  border-color:var(--coral);
+  background:rgba(232,96,76,0.12);
+  color:var(--cream);
+}
+.tf-explain{
+  display:none;
+  margin-top:14px;padding:14px 18px;
+  border-radius:10px;
+  font-size:0.92rem;line-height:1.6;
+  background:rgba(240,235,224,0.06);
+  border-left:3px solid var(--gold);
+  color:var(--cream);
+}
+.tf-explain.vis{display:block}
+
+/* ============ CHAT-STYLE MISMATCH ============ */
+.chat-block{
+  margin:40px 0;
+  padding:32px 28px;
+  background:rgba(20,29,43,0.6);
+  border:1px solid rgba(240,235,224,0.10);
+  border-radius:20px;
+}
+.chat-header{
+  display:flex;align-items:center;gap:14px;
+  padding-bottom:16px;
+  border-bottom:1px solid rgba(240,235,224,0.10);
+  margin-bottom:22px;
+}
+.chat-avatar{
+  width:42px;height:42px;border-radius:50%;
+  background:linear-gradient(135deg,var(--coral),var(--purple));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;
+  flex-shrink:0;
+}
+.chat-name{
+  font-family:'Lora',serif;font-weight:600;font-size:1.05rem;color:var(--cream);
+}
+.chat-status{
+  font-size:0.8rem;color:var(--cream-40);
+  display:flex;align-items:center;gap:6px;margin-top:2px;
+}
+.chat-status::before{
+  content:"";width:7px;height:7px;border-radius:50%;
+  background:var(--green);display:inline-block;
+}
+.chat-stream{display:flex;flex-direction:column;gap:14px}
+.chat-bubble{
+  max-width:78%;
+  padding:14px 18px;
+  border-radius:18px;
+  font-size:0.96rem;
+  line-height:1.55;
+  position:relative;
+}
+.chat-bubble .ts{
+  display:block;
+  font-size:0.7rem;
+  color:var(--cream-40);
+  margin-top:6px;
+  letter-spacing:0.05em;
+}
+.chat-bubble.client{
+  align-self:flex-start;
+  background:rgba(232,96,76,0.18);
+  border:1px solid rgba(232,96,76,0.35);
+  color:var(--cream);
+  border-bottom-left-radius:6px;
+}
+.chat-bubble.advisor{
+  align-self:flex-end;
+  background:rgba(79,195,247,0.16);
+  border:1px solid rgba(79,195,247,0.35);
+  color:var(--cream);
+  border-bottom-right-radius:6px;
+}
+.chat-bubble.advisor .ts{text-align:right}
+.chat-meta{
+  display:flex;align-items:center;gap:8px;
+  font-size:0.72rem;letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--cream-40);
+  margin-bottom:4px;
+  font-weight:600;
+}
+.chat-bubble.client .chat-meta{color:#ff8e7a}
+.chat-bubble.advisor .chat-meta{color:#7fd2f9}
+.chat-bubble strong{color:var(--cream);font-family:'Lora',serif}
+
+.chat-reaction{
+  align-self:center;
+  display:inline-flex;align-items:center;gap:10px;
+  padding:10px 18px;
+  background:rgba(232,96,76,0.20);
+  border:1px solid var(--coral);
+  border-radius:999px;
+  font-family:'Lora',serif;font-style:italic;
+  font-size:0.92rem;
+  color:var(--cream);
+  margin-top:6px;
+}
+.chat-reaction .ico{font-size:1.1rem}
+
+.mismatch-chain{
+  margin-top:24px;
+  padding:22px 26px;
+  background:linear-gradient(135deg, rgba(232,96,76,0.12), transparent);
+  border-left:3px solid var(--coral);
+  border-radius:8px;
+}
+.mismatch-chain h4{
+  font-family:'Lora',serif;font-weight:700;font-size:1.02rem;
+  color:var(--coral);margin-bottom:6px;
+}
+.mismatch-chain p{color:var(--cream);font-size:0.95rem;line-height:1.6}
+.chain{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  margin-top:14px;
+  font-family:'Lora',serif;font-style:italic;
+  color:var(--cream-70);
+  font-size:0.92rem;
+}
+.chain span{
+  padding:4px 12px;
+  background:rgba(240,235,224,0.06);
+  border:1px solid rgba(240,235,224,0.18);
+  border-radius:999px;
+  color:var(--cream);
+}
+
+/* ============ FINAL RESULTS ============ */
+.results-block{
+  margin:40px 0;
+  padding:42px 38px;
+  background:linear-gradient(135deg, rgba(123,111,232,0.20), rgba(255,213,79,0.10));
+  border:1px solid rgba(255,213,79,0.4);
+  border-radius:20px;
+  text-align:center;
+}
+.results-block h3{
+  font-family:'Lora',serif;font-weight:600;
+  font-size:clamp(1.3rem,2.4vw,1.7rem);
+  color:var(--cream);margin-bottom:8px;
+}
+.results-score{
+  font-family:'Lora',serif;font-weight:700;
+  font-size:clamp(2.6rem,5vw,4rem);
+  color:var(--gold);
+  margin:14px 0 8px;
+  line-height:1;
+  text-shadow:0 4px 30px rgba(255,213,79,0.40);
+}
+.results-score .total{color:var(--cream-40);font-size:0.5em;font-weight:400}
+.results-msg{
+  font-family:'Lora',serif;font-style:italic;
+  color:var(--cream-70);
+  font-size:1.02rem;
+  max-width:560px;
+  margin:0 auto 14px;
+}
+.results-bar{
+  max-width:380px;margin:18px auto 0;
+  height:10px;background:rgba(240,235,224,0.10);
+  border-radius:999px;overflow:hidden;
+}
+.results-fill{
+  height:100%;
+  background:linear-gradient(90deg, var(--purple), var(--gold), var(--green));
+  border-radius:999px;
+  width:0%;
+  transition:width 1s ease 0.2s;
+}
+
+/* ============ CTA / OUTRO ============ */
+.outro{
+  margin-top:40px;
+  padding:48px 40px;
+  text-align:center;
+  background:linear-gradient(135deg, rgba(123,111,232,0.20), rgba(232,96,76,0.10));
+  border:1px solid rgba(240,235,224,0.18);
+  border-radius:18px;
+}
+.outro h3{
+  font-family:'Lora',serif;font-weight:600;font-style:italic;
+  font-size:clamp(1.3rem,2.4vw,1.8rem);
+  color:var(--cream);margin-bottom:10px;
+}
+.outro p{color:var(--cream-70);max-width:620px;margin:0 auto;font-size:1.02rem}
+
+/* ============ DIVIDER ============ */
+.divider{
+  display:flex;align-items:center;gap:20px;
+  margin:60px 0 36px;
+}
+.divider-line{flex:1;height:1px;background:rgba(240,235,224,0.18)}
+.divider-glyph{
+  color:var(--cream-40);
+  font-family:'Lora',serif;font-style:italic;font-size:0.85rem;
+  letter-spacing:0.18em;text-transform:uppercase;
+}
+
+.lead-p{
+  font-size:1.06rem;
+  color:var(--cream);
+  line-height:1.75;
+  max-width:780px;
+  margin-bottom:24px;
+}
+.lead-p strong{color:var(--gold);font-weight:600}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 900px){
+  .top-nav{padding:12px 22px;flex-wrap:wrap;gap:12px}
+  .nav-links{order:3;width:100%;justify-content:center;padding-top:6px;border-top:1px solid rgba(240,235,224,0.10)}
+  .nav-link{font-size:0.78rem;padding:6px 10px}
+  .flash-grid{grid-template-columns:repeat(2,1fr);gap:14px}
+  .trio-grid{grid-template-columns:1fr;gap:14px}
+  .ex-cards{grid-template-columns:repeat(2,1fr)}
+  .compare-grid{grid-template-columns:1fr}
+  .persona-top{grid-template-columns:1fr}
+  .persona-hero{border-right:none;border-bottom:1px solid rgba(240,235,224,0.10);padding:30px 22px}
+  .persona-detail-inner{grid-template-columns:1fr}
+  .match-grid{grid-template-columns:1fr;gap:20px}
+}
+@media (max-width: 700px){
+  .top-nav{padding:10px 18px}
+  .section{padding:120px 22px 80px}
+  .hero{padding:140px 22px 60px;min-height:80vh}
+  .flash-card{min-height:220px}
+  .ex-block,.kc-block,.match-block,.tf-block,.chat-block{padding:24px 22px}
+  .outro,.results-block{padding:36px 24px}
+  .q-cell{padding:20px 22px}
+  .chat-bubble{max-width:90%}
+  .timeline-bar{margin:0 6px}
+}
+@media (max-width: 640px){
+  .flash-grid{grid-template-columns:1fr}
+  .ex-cards{grid-template-columns:1fr}
+  .tf-buttons{flex-direction:column}
+  .scenario-options{grid-template-columns:1fr}
+  .nav-links{gap:2px}
+  .nav-link{font-size:0.72rem;padding:5px 9px;letter-spacing:0.02em}
+  .score-pill{font-size:0.74rem;padding:5px 11px}
+  .brand-logo{height:28px}
+  .persona-quadrants{grid-template-columns:1fr}
+  .q-cell{border-right:none}
+  .q-cell:nth-last-child(-n+2){border-bottom:1px solid rgba(240,235,224,0.10)}
+  .q-cell:last-child{border-bottom:none}
+}
+@media (max-width: 540px){
+  .section{padding:110px 16px 70px}
+  .hero{padding:130px 16px 50px}
+  .concept-box{padding:22px 22px 22px 28px}
+  .step{padding:18px 18px}
+  .persona-detail-inner{padding:22px 20px 24px}
+  .ex-block,.kc-block,.match-block,.tf-block,.chat-block{padding:22px 18px}
+  .timeline-bar{margin:0}
+  .tm-label{font-size:0.78rem}
+  .tm-when{font-size:0.62rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ TOP NAV ============ -->
+<nav class="top-nav">
+  <div class="brand">
+    <!-- Inline Nebula Academy logo -->
+    <svg class="brand-logo" viewBox="0 0 258 46" xmlns="http://www.w3.org/2000/svg" aria-label="Nebula Academy">
+      <defs>
+        <linearGradient id="lg-head" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#FF6B9D"/>
+          <stop offset="55%" stop-color="#B554E8"/>
+          <stop offset="100%" stop-color="#7B6FE8"/>
+        </linearGradient>
+      </defs>
+      <!-- Stylised side-profile head with graduation cap -->
+      <g transform="translate(2,2)">
+        <!-- Profile silhouette facing right -->
+        <path d="M 10 40
+                 L 10 26
+                 C 10 14, 18 6, 28 6
+                 C 36 6, 41 12, 41 19
+                 C 41 22, 40 24, 39 26
+                 L 42 27
+                 L 40 30
+                 L 38 30
+                 L 38 33
+                 C 38 36, 36 38, 33 38
+                 L 30 38
+                 L 30 42
+                 L 10 42 Z"
+              fill="url(#lg-head)"/>
+        <!-- Graduation cap (mortarboard) sitting on the head -->
+        <path d="M 6 10 L 24 4 L 42 10 L 24 16 Z" fill="url(#lg-head)"/>
+        <!-- Cap underside band -->
+        <path d="M 12 12 L 12 14 L 24 18 L 36 14 L 36 12" stroke="#05020f" stroke-width="1.2" fill="none" opacity="0.45"/>
+        <!-- Tassel -->
+        <line x1="40" y1="11" x2="40" y2="18" stroke="#FFD54F" stroke-width="1.4" stroke-linecap="round"/>
+        <circle cx="40" cy="19.3" r="1.8" fill="#FFD54F"/>
+      </g>
+      <!-- wordmark: nebula -->
+      <text x="58" y="30" font-family="Lora, serif" font-weight="700" font-size="22" fill="#f0ebe0" letter-spacing="-0.3">nebula</text>
+      <!-- divider -->
+      <line x1="143" y1="10" x2="143" y2="36" stroke="#f0ebe0" stroke-width="1.5" opacity="0.50"/>
+      <!-- Academy -->
+      <text x="152" y="30" font-family="Questrial, sans-serif" font-weight="400" font-size="20" fill="#f0ebe0" letter-spacing="0.5">Academy</text>
+    </svg>
+  </div>
+
+  <div class="nav-links">
+    <button class="nav-link active" data-target="hero" onclick="goToSection('hero')">Intro</button>
+    <button class="nav-link" data-target="section-1" onclick="goToSection('section-1')">What is a Persona</button>
+    <button class="nav-link" data-target="section-2" onclick="goToSection('section-2')">Three Personas</button>
+    <button class="nav-link" data-target="section-3" onclick="goToSection('section-3')">Personalisation</button>
+  </div>
+
+  <div class="nav-right">
+    <div class="score-pill" id="scorePill" aria-live="polite">
+      <span class="star">★</span>
+      <span><span class="num" id="scoreNum">0</span><span class="total"> / 7 pts</span></span>
+    </div>
+    <button class="fs-btn" id="fsBtn" onclick="toggleFullscreen()" aria-label="Toggle fullscreen" title="Fullscreen">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path class="fs-open" d="M4 9V5a1 1 0 0 1 1-1h4 M15 4h4a1 1 0 0 1 1 1v4 M20 15v4a1 1 0 0 1-1 1h-4 M9 20H5a1 1 0 0 1-1-1v-4"/>
+        <path class="fs-close" d="M9 4v4a1 1 0 0 1-1 1H4 M4 15h4a1 1 0 0 1 1 1v4 M15 20v-4a1 1 0 0 1 1-1h4 M20 9h-4a1 1 0 0 1-1-1V4" style="display:none"/>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="hero">
+  <h1 class="fade">
+    Understanding <br><span class="accent">Client Personas</span>
+  </h1>
+  <p class="hero-lead fade">
+    Every client who reaches out brings their own pain, their own question, and their own deepest need. This module teaches you to read beneath the surface — and to recognise the three core motivations that shape every conversation: <em>FEEL, HEAL, KNOW</em>.
+  </p>
+  <div class="hero-cta-wrap fade">
+    <button class="hero-cta" onclick="goToSection('section-1')">
+      <span>Let's start</span>
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14M13 5l7 7-7 7"/>
+      </svg>
+    </button>
+    <span class="hero-cta-hint">3 chapters · interactive · ~10 min</span>
+  </div>
+</header>
+
+<!-- ============ SECTION 1: WHAT IS USER PERSONA ============ -->
+<section class="section" id="section-1">
+  <div class="section-inner">
+    <div class="kicker fade">Chapter 01</div>
+    <h2 class="fade">What is a client persona — and why it matters for you</h2>
+
+    <p class="lead-p fade" style="margin-top:24px">
+      A client persona is more than a label. It's a <strong>map of the deep psychological motivation</strong> a person brings into a conversation — the silent reason behind every question they ask you. Two people can type the exact same words and still need completely different things from you.
+    </p>
+
+    <p class="lead-p fade">
+      Your craft as an advisor isn't only what you know — it's how clearly you can <em>read</em> who's sitting in front of you. Understanding personas is what separates a generic reading from a moment that truly lands.
+    </p>
+
+    <div class="concept-box fade">
+      <p>The shift is simple but radical: move from <strong>"What is this client asking?"</strong> to <strong>"Why are they asking it?"</strong> The words on the screen are the surface. The persona is the current beneath.</p>
+    </div>
+
+    <h3 class="fade" style="margin:48px 0 18px">From WHAT to WHY — the two layers of every question</h3>
+
+    <div class="compare-grid">
+      <div class="compare-col cyan fade">
+        <div class="compare-label">Surface analysis</div>
+        <h3>The WHAT</h3>
+        <p>You only see the literal question and give a standard answer that doesn't truly resonate with the person's real need.</p>
+        <ul>
+          <li>Generic, one-size-fits-all reply</li>
+          <li>Misses the emotional undertone</li>
+          <li>Leads to "I wasn't really understood"</li>
+        </ul>
+      </div>
+      <div class="compare-col green fade">
+        <div class="compare-label">Deep understanding</div>
+        <h3>The WHY</h3>
+        <p>You identify the underlying motivation and respond to the psychological need driving the question — not just its surface form.</p>
+        <ul>
+          <li>Personalised, resonant response</li>
+          <li>Matches the client's actual emotional state</li>
+          <li>Builds trust and long-term loyalty</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="fade" style="margin:56px 0 18px">Three principles that make this system reliable</h3>
+
+    <div class="step-list">
+      <div class="step fade">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Mutual Exclusivity</h4>
+          <p>Each client belongs to exactly <strong>one</strong> persona based on their core motivation. No overlap, no in-betweens — your job is to name the one that's truly driving them.</p>
+        </div>
+      </div>
+      <div class="step fade">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Stability</h4>
+          <p>A client's persona doesn't change from chat to chat or from mood to mood. Once you've identified it correctly, that knowledge stays useful across every future conversation with them.</p>
+        </div>
+      </div>
+      <div class="step fade">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Evidence-based</h4>
+          <p>Personas aren't guesswork. They're recognised through concrete behavioural signals — the kind of questions asked, the language used, where the pain is focused (past, present, future).</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- KNOWLEDGE CHECK 1 -->
+    <div class="kc-block fade" id="kc1">
+      <span class="kc-label">Knowledge Check</span>
+      <span class="kc-points">+1 pt</span>
+      <div class="kc-q">A client persona is best described as…</div>
+      <div class="kc-options">
+        <button class="kc-opt" onclick="checkKC(this, 'kc1', false)">
+          <span class="kc-opt-letter">A</span>
+          <span>A demographic profile based on age, gender and country.</span>
+        </button>
+        <button class="kc-opt" onclick="checkKC(this, 'kc1', true)">
+          <span class="kc-opt-letter">B</span>
+          <span>A map of the deep psychological motivation driving why the client is reaching out.</span>
+        </button>
+        <button class="kc-opt" onclick="checkKC(this, 'kc1', false)">
+          <span class="kc-opt-letter">C</span>
+          <span>A mood that changes from one conversation to the next.</span>
+        </button>
+      </div>
+      <div class="kc-feedback" id="kc1-feedback"></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ SECTION 2: THE THREE PERSONAS ============ -->
+<section class="section" id="section-2">
+  <div class="section-inner">
+    <div class="kicker fade">Chapter 02</div>
+    <h2 class="fade">The three personas: FEEL · HEAL · KNOW</h2>
+
+    <p class="lead-p fade" style="margin-top:24px">
+      Every client who comes to you is driven by one of three core motivations. The litmus test is simple — once you know which one they're chasing, you know how to meet them.
+    </p>
+
+    <!-- NEW TRIO VISUAL (replaces single-line concept box) -->
+    <div class="trio-grid">
+      <div class="trio t-feel fade">
+        <span class="trio-emoji">🔮</span>
+        <span class="trio-tag">FEEL</span>
+        <h4>Emotional safety</h4>
+        <div class="trio-sub">The Anxious Seeker</div>
+        <p>Seeks emotional validation and reassurance. Doesn't come for information — comes to be soothed.</p>
+      </div>
+      <div class="trio t-heal fade">
+        <span class="trio-emoji">💔</span>
+        <span class="trio-tag">HEAL</span>
+        <h4>Trauma healing</h4>
+        <div class="trio-sub">The Healing Soul</div>
+        <p>Wants to process the wound, rebuild self-worth, and rewrite the pattern. Needs a witness.</p>
+      </div>
+      <div class="trio t-know fade">
+        <span class="trio-emoji">🧩</span>
+        <span class="trio-tag">KNOW</span>
+        <h4>Facts &amp; a plan</h4>
+        <div class="trio-sub">The Clarity Seeker</div>
+        <p>Wants logic, options, a clear decision matrix. Came for an architect, not an empath.</p>
+      </div>
+    </div>
+
+    <!-- TIMELINE SCHEME -->
+    <div class="timeline-scheme fade">
+      <p class="timeline-title">Where each persona's pain lives on the timeline</p>
+      <div class="timeline-bar">
+        <div class="timeline-line"></div>
+        <div class="timeline-marker tm-heal">
+          <span class="tm-dot"></span>
+          <div class="tm-label">HEAL</div>
+          <div class="tm-when">Past wound</div>
+        </div>
+        <div class="timeline-marker tm-know">
+          <span class="tm-dot"></span>
+          <div class="tm-label">KNOW</div>
+          <div class="tm-when">Present chaos</div>
+        </div>
+        <div class="timeline-marker tm-feel">
+          <span class="tm-dot"></span>
+          <div class="tm-label">FEEL</div>
+          <div class="tm-when">Future fear</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLASH CARDS -->
+    <h3 class="fade" style="margin:48px 0 8px">Three motivations · one tap to flip</h3>
+    <p class="fade" style="color:var(--cream-70);font-size:0.96rem;margin-bottom:24px">Tap each card to see the core motivation in plain language.</p>
+
+    <div class="flash-grid">
+      <div class="flash-card fade" onclick="flipFlash(this)">
+        <div class="flash-face flash-front">
+          <span class="flash-glyph">🔮</span>
+          <div>
+            <h4>FEEL</h4>
+            <p>The Anxious Seeker</p>
+          </div>
+          <span class="flash-hint">Tap to flip</span>
+        </div>
+        <div class="flash-face flash-back">
+          <h5>FEEL</h5>
+          <p>Seeks emotional validation and reassurance. Needs to feel safe. Doesn't come for information — comes to be soothed.</p>
+        </div>
+      </div>
+      <div class="flash-card fade" onclick="flipFlash(this)">
+        <div class="flash-face flash-front">
+          <span class="flash-glyph">💔</span>
+          <div>
+            <h4>HEAL</h4>
+            <p>The Healing Soul</p>
+          </div>
+          <span class="flash-hint">Tap to flip</span>
+        </div>
+        <div class="flash-face flash-back">
+          <h5>HEAL</h5>
+          <p>Seeks healing, restoration, the rebuilding of self-worth. Carries a wound from the past. Needs a witness to their growth.</p>
+        </div>
+      </div>
+      <div class="flash-card fade" onclick="flipFlash(this)">
+        <div class="flash-face flash-front">
+          <span class="flash-glyph">🧭</span>
+          <div>
+            <h4>KNOW</h4>
+            <p>The Clarity Seeker</p>
+          </div>
+          <span class="flash-hint">Tap to flip</span>
+        </div>
+        <div class="flash-face flash-back">
+          <h5>KNOW</h5>
+          <p>Seeks facts, logic, a concrete plan. Needs structure in chaos. Doesn't want empathy — wants an architect for their decision.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- DEEP DIVE - PERSONA ROWS -->
+    <div class="divider">
+      <div class="divider-line"></div>
+      <span class="divider-glyph">Deep dive · each persona in detail</span>
+      <div class="divider-line"></div>
+    </div>
+
+    <h3 class="fade" style="margin-bottom:12px">Meet each persona</h3>
+    <p class="fade" style="color:var(--cream-70);font-size:0.96rem;margin-bottom:24px">Each persona below has four things you must know: who they are, when they come, how they ask, and what they need. Open <em>"Signals &amp; playbook"</em> for what to say — and what to never say.</p>
+
+    <div class="persona-rows">
+
+      <!-- PERSONA 1: ANXIOUS SEEKER -->
+      <article class="persona-row purple fade" id="pos-feel">
+        <div class="persona-top">
+          <div class="persona-hero">
+            <div class="persona-glyph-wrap"><span class="persona-glyph">💫</span></div>
+            <span class="persona-badge">FEEL</span>
+            <h3 class="persona-name">The Anxious Seeker</h3>
+            <p class="persona-tag">"Will it be okay?"</p>
+            <div class="persona-mini-time">Pain lives in the <strong>future</strong></div>
+          </div>
+          <div class="persona-quadrants">
+            <div class="q-cell">
+              <div class="q-icon"><span class="q-icon-glyph">👤</span><span>Who</span></div>
+              <p>Anxious, uncertain, deeply emotional and vulnerable. Lives in the future they can't control. Fears not being "enough" — compares themselves with others.</p>
+            </div>
+            <div class="q-cell">
+              <div class="q-icon"><span class="q-icon-glyph">🕒</span><span>When they come</span></div>
+              <p>In moments of fear and uncertainty about a future outcome — most often relationships, separation, waiting for someone to come back.</p>
+            </div>
+            <div class="q-cell">
+              <div class="q-icon"><span class="q-icon-glyph">💬</span><span>How they ask</span></div>
+              <p>Long, emotional descriptions of fear. Loop-style questions returning for stronger reassurance: <em>"Will he come back?", "Should I wait?", "Will everything be okay?"</em></p>
+            </div>
+            <div class="q-cell">
+              <div class="q-icon"><span class="q-icon-glyph">✨</span><span>What they need</span></div>
+              <p>Emotional validation and constant soothing. A stable, empathetic anchor. The magic words: <em>"It's going to be okay."</em></p>
+            </div>
+          </div>
+        </div>
+        <button class="persona-toggle" onclick="togglePos('feel')" aria-expanded="false" aria-controls="pos-feel-detail">
+          <span>Signals &amp; playbook</span>
+          <span class="arr">▾</span>
+        </button>
+        <div class="persona-detail" id="pos-feel-detail">
+          <div class="persona-detail-inner">
+            <div class="signals-block">
+              <span class="when-label">Listen for these signals…</span>
+              <ul class="signal-list">
+                <li>"I feel like I'm not enough for him."</li>
+                <li>"I keep checking his profile, his story…"</li>
+                <li>"Please just tell me everything will be alright."</li>
+              </ul>
+            </div>
+            <div class="dos-donts">
+              <div class="dos">
+                <h5>Be the anchor — DO</h5>
+                <ul>
+                  <li>Empathetic, soothing tone</li>
+                  <li>Validate their inherent worth, not the partner</li>
+                  <li>Offer a clear positive vision of the future</li>
+                  <li>Use spirituality (Tarot, energies) as comfort</li>
+                </ul>
+              </div>
+              <div class="donts">
+                <h5>Avoid the triggers — DON'T</h5>
+                <ul>
+                  <li>Ambiguity ("Maybe", "Time will tell")</li>
+                  <li>Comparison with exes or other people</li>
+                  <li>Dismiss the pain ("Just let it go")</li>
+                  <li>Push them toward fast decisions</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- PERSONA 2: HEALING SOUL -->
+      <article class="persona-row coral fade" id="pos-heal">
+        <div class="persona-top">
+          <div class="persona-hero">
+            <div class="persona-glyph-wrap"><span class="persona-glyph">💔</span></div>
+            <span class="persona-badge">HEAL</span>
+            <h3 class="persona-name">The Healing Soul</h3>
+            <p class="persona-tag">"How do I rebuild from this?"</p>
+            <div class="persona-mini-time">Pain lives in the <strong>past</strong></div>
+          </div>
+          <div class="persona-quadrants">
+            <div class="q-cell">
+              <div class="q-icon"><span class="q-icon-glyph">👤</span><span>Who</span></div>
+              <p>Emotional, vulnerable, deeply reflective. Often carries a "rescuer" or "victim" pattern. Carries an unhealed wound — betrayal, loss, abuse — that defines how they see themselves.</p>
+            </div>
+            <div class="q-cell">
+              <div class="q-icon"><span class="q-icon-glyph">🕒</span><span>When they come</span></div>
+              <p>After an emotional trigger — a breakup, a conflict, a memory resurfacing. They come for a deep, witnessed emotional connection, not a quick fix.</p>
+            </div>
+            <div class="q-cell">
+              <div class="q-icon"><span class="q-icon-glyph">💬</span><span>How they ask</span></div>
+              <p>Long, detailed descriptions of inner struggle. Uses therapeutic vocabulary: <em>trauma, boundaries, patterns, self-worth.</em> Questions like <em>"How do I let this go?", "Am I worthy of love?"</em></p>
+            </div>
+            <div class="q-cell">
+              <div class="q-icon"><span class="q-icon-glyph">✨</span><span>What they need</span></div>
+              <p>A therapeutic connection. Patience and steadiness. To feel <em>"seen here"</em> — without judgment. Structure for the long path of healing, not a sprint.</p>
+            </div>
+          </div>
+        </div>
+        <button class="persona-toggle" onclick="togglePos('heal')" aria-expanded="false" aria-controls="pos-heal-detail">
+          <span>Signals &amp; playbook</span>
+          <span class="arr">▾</span>
+        </button>
+        <div class="persona-detail" id="pos-heal-detail">
+          <div class="persona-detail-inner">
+            <div class="signals-block">
+              <span class="when-label">Listen for these signals…</span>
+              <ul class="signal-list">
+                <li>"I feel like a horrible person."</li>
+                <li>"I can't let her think I was wrong."</li>
+                <li>"How do I stop repeating the same pattern?"</li>
+              </ul>
+            </div>
+            <div class="dos-donts">
+              <div class="dos">
+                <h5>Be the guide — DO</h5>
+                <ul>
+                  <li>Validate their strength and progress</li>
+                  <li>Offer structure for the healing path</li>
+                  <li>Hold patience — bear witness to growth</li>
+                  <li>Small "push hooks" to confirm new boundaries</li>
+                </ul>
+              </div>
+              <div class="donts">
+                <h5>Avoid the triggers — DON'T</h5>
+                <ul>
+                  <li>Dismiss the wound ("Just forget about it")</li>
+                  <li>Re-open trauma details without a purpose</li>
+                  <li>Feed the rescuer complex</li>
+                  <li>Pressure them on the pace of healing</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- PERSONA 3: CLARITY SEEKER -->
+      <article class="persona-row green fade" id="pos-know">
+        <div class="persona-top">
+          <div class="persona-hero">
+            <div class="persona-glyph-wrap"><span class="persona-glyph">🧩</span></div>
+            <span class="persona-badge">KNOW</span>
+            <h3 class="persona-name">The Clarity Seeker</h3>
+            <p class="persona-tag">"What's the move — yes or no?"</p>
+            <div class="persona-mini-time">Pain lives in the <strong>present</strong></div>
+          </div>
+          <div class="persona-quadrants">
+            <div class="q-cell">
+              <div class="q-icon"><span class="q-icon-glyph">👤</span><span>Who</span></div>
+              <p>Rational, assertive, emotionally aware but uses logic as their language. Stuck in analytical paralysis — drowning in variables and unable to decide.</p>
+            </div>
+            <div class="q-cell">
+              <div class="q-icon"><span class="q-icon-glyph">🕒</span><span>When they come</span></div>
+              <p>Before a major present-tense decision: a breakup, a move, a career change, an investment. They've been thinking in circles — they need someone to cut through.</p>
+            </div>
+            <div class="q-cell">
+              <div class="q-icon"><span class="q-icon-glyph">💬</span><span>How they ask</span></div>
+              <p>Direct, concrete, business-like. Questions like <em>"What are my options?", "Yes or no?", "What's the exit strategy?"</em> They quietly carry deep distress beneath the rational tone.</p>
+            </div>
+            <div class="q-cell">
+              <div class="q-icon"><span class="q-icon-glyph">✨</span><span>What they need</span></div>
+              <p>Facts and logic. Advisor as analyst. No fluff, no philosophy — only clear next steps and timeframes. A mini project plan, not a hug.</p>
+            </div>
+          </div>
+        </div>
+        <button class="persona-toggle" onclick="togglePos('know')" aria-expanded="false" aria-controls="pos-know-detail">
+          <span>Signals &amp; playbook</span>
+          <span class="arr">▾</span>
+        </button>
+        <div class="persona-detail" id="pos-know-detail">
+          <div class="persona-detail-inner">
+            <div class="signals-block">
+              <span class="when-label">Listen for these signals…</span>
+              <ul class="signal-list">
+                <li>"Give me explanations, not generalities — exact details."</li>
+                <li>"From a business perspective, should I leave?"</li>
+                <li>"Just tell me yes or no — what's the decision?"</li>
+              </ul>
+            </div>
+            <div class="dos-donts">
+              <div class="dos">
+                <h5>Be the architect — DO</h5>
+                <ul>
+                  <li>Professional, direct, assertive tone</li>
+                  <li>Validate the logic of their fear</li>
+                  <li>Give a concrete plan: Step 1, Step 2, Step 3</li>
+                  <li>Use Tarot as analysis, not as comfort</li>
+                </ul>
+              </div>
+              <div class="donts">
+                <h5>Avoid the triggers — DON'T</h5>
+                <ul>
+                  <li>Emotional "water" and philosophy</li>
+                  <li>Ambiguity without logical reasoning</li>
+                  <li>Push them to "open the heart"</li>
+                  <li>Discuss the past unless it drives the decision</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- MATCH GAME -->
+    <div class="divider">
+      <div class="divider-line"></div>
+      <span class="divider-glyph">Practice · match the signal to the persona</span>
+      <div class="divider-line"></div>
+    </div>
+
+    <div class="match-block fade">
+      <span class="kc-label" style="border-color:var(--gold);color:var(--gold);background:rgba(255,213,79,0.18)">Match Exercise</span>
+      <span class="kc-points">+3 pts</span>
+      <h3 style="margin:14px 0 6px;clear:both">Which persona is speaking?</h3>
+      <p style="color:var(--cream-70);font-size:0.96rem">Tap a phrase on the left, then tap the persona on the right that fits. Get all three right to complete the match.</p>
+
+      <div class="match-grid">
+        <div class="match-col">
+          <h4>Their words</h4>
+          <div class="match-list">
+            <button class="match-item" data-id="m1" data-match="feel" onclick="selectMatch(this)">"Will he come back? I just need to know everything will be okay."</button>
+            <button class="match-item" data-id="m2" data-match="heal" onclick="selectMatch(this)">"I can't let go of how she hurt me. I keep repeating the same pattern."</button>
+            <button class="match-item" data-id="m3" data-match="know" onclick="selectMatch(this)">"What are my options here? Give me a clear yes or no — I don't have time."</button>
+          </div>
+        </div>
+        <div class="match-col">
+          <h4>The persona</h4>
+          <div class="match-list">
+            <button class="match-item" data-id="p2" data-match="heal" onclick="selectMatch(this)">💔 The Healing Soul (HEAL)</button>
+            <button class="match-item" data-id="p3" data-match="know" onclick="selectMatch(this)">🧩 The Clarity Seeker (KNOW)</button>
+            <button class="match-item" data-id="p1" data-match="feel" onclick="selectMatch(this)">💫 The Anxious Seeker (FEEL)</button>
+          </div>
+        </div>
+      </div>
+      <div class="match-status" id="match-status">0 / 3 matched</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ SECTION 3: PERSONALIZATION ============ -->
+<section class="section" id="section-3">
+  <div class="section-inner">
+    <div class="kicker fade">Chapter 03</div>
+    <h2 class="fade">Why personalisation matters — and what happens when it fails</h2>
+
+    <p class="lead-p fade" style="margin-top:24px">
+      Personalisation isn't about flattery or remembering a name. It's about <strong>matching your approach to the psychological need underneath the question.</strong> Same question, different persona — different conversation.
+    </p>
+
+    <div class="concept-box green fade">
+      <p>The same words can mean completely different things. Your job isn't to answer the question — it's to meet the need.</p>
+    </div>
+
+    <!-- EXAMPLE BLOCK 1 -->
+    <h3 class="fade" style="margin:48px 0 18px">Example: one question, three different needs</h3>
+
+    <div class="ex-block fade">
+      <p class="ex-q">"Should I stay in this relationship?"</p>
+      <p style="color:var(--cream-70);font-size:0.95rem;margin-bottom:8px">Three clients send you this exact sentence. Tap each card to reveal what each one is <em>actually</em> asking for.</p>
+
+      <div class="ex-cards">
+        <div class="ex-card" onclick="toggleCard(this)">
+          <div class="ex-art">
+            <span class="ex-emoji">💫</span>
+            <span class="ex-name">Client A</span>
+            <span class="persona-badge" style="background:var(--purple);color:#fff">FEEL</span>
+            <span class="ex-hint">Tap to reveal</span>
+          </div>
+          <div class="ex-info">
+            <span class="ex-meaning">Means: "Please reassure me he still loves me."</span>
+            <p>They don't actually want a decision. They want the fear to quiet down. Give them an emotionally warm anchor and a vision of the future being safe — not a list of pros and cons.</p>
+          </div>
+        </div>
+        <div class="ex-card" onclick="toggleCard(this)">
+          <div class="ex-art">
+            <span class="ex-emoji">💔</span>
+            <span class="ex-name">Client B</span>
+            <span class="persona-badge" style="background:var(--coral);color:#fff">HEAL</span>
+            <span class="ex-hint">Tap to reveal</span>
+          </div>
+          <div class="ex-info">
+            <span class="ex-meaning">Means: "Help me see if this pattern is hurting me again."</span>
+            <p>They're processing a wound. Honour the pain, name the pattern, and gently structure the path of healing. They don't want a verdict — they want a witness.</p>
+          </div>
+        </div>
+        <div class="ex-card" onclick="toggleCard(this)">
+          <div class="ex-art">
+            <span class="ex-emoji">🧩</span>
+            <span class="ex-name">Client C</span>
+            <span class="persona-badge" style="background:var(--green);color:var(--navy)">KNOW</span>
+            <span class="ex-hint">Tap to reveal</span>
+          </div>
+          <div class="ex-info">
+            <span class="ex-meaning">Means: "Give me the decision matrix so I can act."</span>
+            <p>They've been spinning in analysis. They want a clear yes or no with reasoning. Stay direct, give them Step 1 / Step 2, no spiritual fluff — just clarity.</p>
+          </div>
+        </div>
+      </div>
+
+      <button class="synth-btn" onclick="toggleSynth(this, 'syn1')">
+        <span>See the takeaway</span>
+        <span class="arr">▾</span>
+      </button>
+      <div class="synth-box" id="syn1">
+        <h5>The synthesis</h5>
+        <p>The question is identical. The persona changes everything. If you answer the literal words instead of the underlying need, you'll deliver a technically correct reply that still feels like the client wasn't heard. <em>Read the persona first, respond second.</em></p>
+      </div>
+    </div>
+
+    <!-- CHAT-STYLE MISMATCH -->
+    <h3 class="fade" style="margin:56px 0 18px">What happens when we get it wrong: the mismatch</h3>
+
+    <div class="chat-block fade">
+      <div class="chat-header">
+        <div class="chat-avatar">💔</div>
+        <div>
+          <div class="chat-name">Client · Healing Soul (HEAL)</div>
+          <div class="chat-status">Online · came for emotional witness</div>
+        </div>
+      </div>
+
+      <div class="chat-stream">
+        <div class="chat-bubble client">
+          <div class="chat-meta">Client</div>
+          I keep falling into the same painful pattern. I just feel broken — like I can't trust myself anymore.
+          <span class="ts">21:14</span>
+        </div>
+        <div class="chat-bubble client">
+          <div class="chat-meta">Client</div>
+          I don't know what to do with all of this. It hurts.
+          <span class="ts">21:14</span>
+        </div>
+        <div class="chat-bubble advisor">
+          <div class="chat-meta">Advisor · responding in Clarity Seeker mode ⚠️</div>
+          Okay — here are your three options. <strong>Step 1:</strong> cut contact. <strong>Step 2:</strong> list the red flags. <strong>Step 3:</strong> decide in 48 hours.
+          <span class="ts">21:15</span>
+        </div>
+        <div class="chat-bubble advisor">
+          <div class="chat-meta">Advisor · pulls the cards</div>
+          I drew three Tarot cards for you: <strong>Three of Swords · Tower · Eight of Cups.</strong> The reading is clear — the pattern is broken, the structure is falling, and it's time to walk away. Don't overthink it. Just execute the plan.
+          <span class="ts">21:15</span>
+        </div>
+        <div class="chat-reaction">
+          <span class="ico">💧</span>
+          <span><em>Client reads it as: "She didn't see me — she just gave me homework."</em></span>
+        </div>
+        <div class="chat-bubble client">
+          <div class="chat-meta">Client · two minutes later</div>
+          ok. thanks.
+          <span class="ts">21:17 · last seen</span>
+        </div>
+      </div>
+
+      <div class="mismatch-chain">
+        <h4>The consequence of a mismatch</h4>
+        <p>The advisor gave a technically correct, structured plan — but the client came for a witness, not a checklist. The deepest pain was brushed aside, solved like a logistics problem. The conversation ends polite — and then ends for good.</p>
+        <div class="chain">
+          <span>Mismatch</span> → <span>"I'm not understood"</span> → <span>Frustration</span> → <span>Lost trust</span> → <span>Churn</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="concept-box gold fade">
+      <p>Not understanding the deep motivation leads to a <strong>critical mismatch</strong> — where the advisor's approach doesn't meet the psychological need. The client feels devalued, even if every word the advisor said was technically accurate.</p>
+    </div>
+
+    <!-- TRUE/FALSE -->
+    <div class="tf-block fade" id="tf1">
+      <span class="kc-label" style="border-color:var(--cyan);color:var(--cyan);background:rgba(79,195,247,0.18)">True or False</span>
+      <span class="kc-points">+1 pt</span>
+      <p class="tf-q" style="margin-top:14px;clear:both">If you give a Healing Soul a structured Clarity Seeker plan ("just do these three steps"), it can feel like you're devaluing their pain — even though the advice is technically sound.</p>
+      <div class="tf-buttons">
+        <button class="tf-btn" onclick="checkTF(this, 'tf1', true)">True</button>
+        <button class="tf-btn" onclick="checkTF(this, 'tf1', false)">False</button>
+      </div>
+      <div class="tf-explain" id="tf1-explain">
+        <strong>True.</strong> The Healing Soul came for a witness to their wound, not a project plan. Replacing emotional presence with a checklist sends the message that the pain isn't worth being seen — which is exactly the wound they were trying to heal in the first place.
+      </div>
+    </div>
+
+    <!-- PERSONA IDENTIFICATION SCENARIO (replaces KC3) -->
+    <div class="scenario-block fade" id="kc3">
+      <span class="kc-label" style="border-color:var(--coral);color:var(--coral);background:rgba(232,96,76,0.14)">Persona Identification</span>
+      <span class="kc-points">+1 pt</span>
+      <h3 style="margin:14px 0 10px;clear:both">Read the message · identify the persona</h3>
+      <p style="color:var(--cream-70);font-size:0.95rem;margin-bottom:6px">A new client just sent you this message. Listen for the language, the timeframe, the kind of help they're asking for — then tap who they are.</p>
+
+      <div class="scenario-card">
+        <div class="scenario-meta-line">
+          <span class="scenario-dot"></span>
+          <span>Incoming message · 23:47</span>
+        </div>
+        <div class="scenario-msg">"I've been weighing a job change for three weeks. The pros and cons are clear on paper but I can't pull the trigger. I don't need to talk about feelings — I just need a sharp second opinion. Stay another year, or go now? Tell me what you'd actually do."</div>
+      </div>
+
+      <div class="scenario-options">
+        <button class="scenario-opt" onclick="checkScenario(this, 'kc3', false)">
+          <span class="scenario-opt-emoji">💫</span>
+          <div class="scenario-opt-text">
+            <span class="scenario-opt-name">FEEL</span>
+            <span class="scenario-opt-sub">The Anxious Seeker</span>
+          </div>
+        </button>
+        <button class="scenario-opt" onclick="checkScenario(this, 'kc3', false)">
+          <span class="scenario-opt-emoji">💔</span>
+          <div class="scenario-opt-text">
+            <span class="scenario-opt-name">HEAL</span>
+            <span class="scenario-opt-sub">The Healing Soul</span>
+          </div>
+        </button>
+        <button class="scenario-opt" onclick="checkScenario(this, 'kc3', true)">
+          <span class="scenario-opt-emoji">🧩</span>
+          <div class="scenario-opt-text">
+            <span class="scenario-opt-name">KNOW</span>
+            <span class="scenario-opt-sub">The Clarity Seeker</span>
+          </div>
+        </button>
+      </div>
+      <div class="kc-feedback" id="kc3-feedback"></div>
+    </div>
+
+    <!-- KNOWLEDGE CHECK 4 -->
+    <div class="kc-block fade" id="kc4">
+      <span class="kc-label">Knowledge Check</span>
+      <span class="kc-points">+1 pt</span>
+      <div class="kc-q">An Anxious Seeker keeps asking the same question in different wording, even after you've answered. What's happening?</div>
+      <div class="kc-options">
+        <button class="kc-opt" onclick="checkKC(this, 'kc4', false)">
+          <span class="kc-opt-letter">A</span>
+          <span>She isn't paying attention — you need to be firmer.</span>
+        </button>
+        <button class="kc-opt" onclick="checkKC(this, 'kc4', true)">
+          <span class="kc-opt-letter">B</span>
+          <span>She's in the reassurance loop — temporary relief fades, anxiety returns, she comes back for stronger validation.</span>
+        </button>
+        <button class="kc-opt" onclick="checkKC(this, 'kc4', false)">
+          <span class="kc-opt-letter">C</span>
+          <span>She doesn't trust your reading — you should suggest she try a different advisor.</span>
+        </button>
+      </div>
+      <div class="kc-feedback" id="kc4-feedback"></div>
+    </div>
+
+    <!-- FINAL RESULTS -->
+    <div class="results-block fade" id="resultsBlock">
+      <h3>Module score</h3>
+      <p class="results-msg" id="resultsMsg">Complete the questions, match exercise, and true/false above to fill in your score.</p>
+      <div class="results-score"><span id="resultsScore">0</span><span class="total"> / 7</span></div>
+      <div class="results-bar"><div class="results-fill" id="resultsFill"></div></div>
+    </div>
+
+    <!-- OUTRO -->
+    <div class="outro fade">
+      <h3>From WHAT they ask · to WHY they ask · to HOW you respond</h3>
+      <p>You now have the map. The next time someone writes to you, pause for a breath before answering. Listen for the pain timeframe, the language, the loop. Name the persona — then meet them where they actually are.</p>
+    </div>
+
+  </div>
+</section>
+
+<script>
+// ============ SCORE STATE ============
+const TOTAL_POINTS = 7;
+let score = 0;
+const answered = new Set();
+
+function addPoints(key, pts){
+  if(answered.has(key)) return;
+  answered.add(key);
+  score += pts;
+  updateScore();
+}
+function updateScore(){
+  const num = document.getElementById('scoreNum');
+  if(num) num.textContent = score;
+  const rs = document.getElementById('resultsScore');
+  if(rs) rs.textContent = score;
+  const fill = document.getElementById('resultsFill');
+  if(fill) fill.style.width = (score / TOTAL_POINTS * 100) + '%';
+  const msg = document.getElementById('resultsMsg');
+  if(msg){
+    if(score === 0){
+      msg.textContent = "Complete the questions, match exercise, scenario, and true/false above to fill in your score.";
+    } else if(score < 3){
+      msg.textContent = "Solid start — keep going. The patterns will click as you work through the questions.";
+    } else if(score < 6){
+      msg.textContent = "You're reading the personas well. A few more details to polish.";
+    } else if(score < 7){
+      msg.textContent = "Strong work — you can almost name them on instinct.";
+    } else {
+      msg.innerHTML = "Perfect score. You read every persona accurately — you're ready to take this into real conversations.";
+    }
+  }
+  // Pulse animation
+  const pill = document.getElementById('scorePill');
+  if(pill){
+    pill.style.transform = 'scale(1.08)';
+    setTimeout(()=>{ pill.style.transform = 'scale(1)'; }, 220);
+  }
+}
+
+// ============ NAVIGATION ============
+function goToSection(id){
+  const el = document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ============ POSITION ACCORDION ============
+function togglePos(id){
+  const card = document.getElementById('pos-' + id);
+  if(!card) return;
+  const isOpen = card.classList.toggle('open');
+  const btn = card.querySelector('.persona-toggle');
+  if(btn){
+    btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    const lbl = btn.querySelector('span:first-child');
+    if(lbl) lbl.textContent = isOpen ? 'Hide signals & playbook' : 'Signals & playbook';
+  }
+}
+
+// ============ EXAMPLE CARDS ============
+function toggleCard(el){
+  el.classList.toggle('open');
+  const hint = el.querySelector('.ex-hint');
+  if(hint){
+    hint.textContent = el.classList.contains('open') ? 'Tap to hide' : 'Tap to reveal';
+  }
+}
+
+// ============ SYNTH BOX ============
+function toggleSynth(btn, synId){
+  const box = document.getElementById(synId);
+  if(!box) return;
+  const isVis = box.classList.toggle('vis');
+  btn.classList.toggle('shown', isVis);
+  const lbl = btn.querySelector('span:first-child');
+  if(lbl) lbl.textContent = isVis ? 'Hide the takeaway' : 'See the takeaway';
+}
+
+// ============ FLASH CARDS ============
+function flipFlash(el){
+  el.classList.toggle('flipped');
+}
+
+// ============ KNOWLEDGE CHECK ============
+const kcFeedback = {
+  kc1: {
+    right: "<strong>Correct (+1 pt).</strong> A persona maps the deep psychological motivation — the WHY behind a question. It stays stable across conversations and is recognised through evidence, not demographics or moods.",
+    wrong: "<strong>Not quite.</strong> Demographics describe the surface, and moods change minute to minute. A persona is the stable, deep psychological motivation behind the client's question."
+  },
+  kc3: {
+    right: "<strong>Correct (+1 pt).</strong> This is the <strong>Clarity Seeker</strong>. The signals are unmistakable: a present-tense decision ('a job change'), an explicit rejection of emotion ('I don't need to talk about feelings'), a request for a verdict ('tell me what you'd do'), and a clear timeframe ('three weeks'). Pain lives in the chaotic present — they need a plan, not a hug.",
+    wrong: "<strong>Not quite.</strong> The right answer is <strong>KNOW · The Clarity Seeker</strong>. Listen for the cues: present-tense decision, explicit rejection of emotional talk ('I don't need to talk about feelings'), and a direct ask for a verdict ('tell me what you'd do'). That's the Clarity Seeker signature."
+  },
+  kc4: {
+    right: "<strong>Correct (+1 pt).</strong> The Anxious Seeker creates a reassurance loop: question → relief → anxiety returns → question repeated for stronger comfort. She's not failing — she's signalling that she needs a stable, empathetic anchor.",
+    wrong: "<strong>Not quite.</strong> The repetition isn't a failure of attention — it's the reassurance loop. Anxiety fades temporarily after an answer, then returns. Ignoring her or sending her away will deepen the panic."
+  }
+};
+
+function checkKC(btn, qId, isRight){
+  const block = document.getElementById(qId);
+  if(!block) return;
+  // Prevent double-scoring
+  if(block.dataset.done === '1') return;
+  block.dataset.done = '1';
+
+  const opts = block.querySelectorAll('.kc-opt');
+  opts.forEach(o => { o.disabled = true; o.style.cursor = 'default'; });
+  btn.classList.add(isRight ? 'right' : 'wrong');
+  if(!isRight){
+    opts.forEach(o => {
+      const handler = o.getAttribute('onclick') || '';
+      if(handler.includes('true') && o !== btn){
+        o.classList.add('right');
+      }
+    });
+  }
+  const fb = document.getElementById(qId + '-feedback');
+  if(fb){
+    fb.classList.add('vis');
+    fb.classList.add(isRight ? 'success' : 'fail');
+    fb.innerHTML = kcFeedback[qId][isRight ? 'right' : 'wrong'];
+  }
+  if(isRight) addPoints(qId, 1);
+}
+
+// ============ SCENARIO IDENTIFICATION ============
+function checkScenario(btn, qId, isRight){
+  const block = document.getElementById(qId);
+  if(!block) return;
+  if(block.dataset.done === '1') return;
+  block.dataset.done = '1';
+
+  const opts = block.querySelectorAll('.scenario-opt');
+  opts.forEach(o => { o.disabled = true; o.style.cursor = 'default'; });
+  btn.classList.add(isRight ? 'right' : 'wrong');
+  if(!isRight){
+    opts.forEach(o => {
+      const handler = o.getAttribute('onclick') || '';
+      if(handler.includes('true') && o !== btn){
+        o.classList.add('right');
+      }
+    });
+  }
+  const fb = document.getElementById(qId + '-feedback');
+  if(fb){
+    fb.classList.add('vis');
+    fb.classList.add(isRight ? 'success' : 'fail');
+    fb.innerHTML = kcFeedback[qId][isRight ? 'right' : 'wrong'];
+  }
+  if(isRight) addPoints(qId, 1);
+}
+
+// ============ FULLSCREEN ============
+function toggleFullscreen(){
+  const doc = document;
+  const el = doc.documentElement;
+  const isFs = doc.fullscreenElement || doc.webkitFullscreenElement;
+  try {
+    if(!isFs){
+      if(el.requestFullscreen) el.requestFullscreen();
+      else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    } else {
+      if(doc.exitFullscreen) doc.exitFullscreen();
+      else if(doc.webkitExitFullscreen) doc.webkitExitFullscreen();
+    }
+  } catch(e){ console.warn('Fullscreen not available', e); }
+}
+document.addEventListener('fullscreenchange', updateFsIcon);
+document.addEventListener('webkitfullscreenchange', updateFsIcon);
+function updateFsIcon(){
+  const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+  const btn = document.getElementById('fsBtn');
+  if(!btn) return;
+  const openIcon = btn.querySelector('.fs-open');
+  const closeIcon = btn.querySelector('.fs-close');
+  if(openIcon) openIcon.style.display = isFs ? 'none' : '';
+  if(closeIcon) closeIcon.style.display = isFs ? '' : 'none';
+}
+
+// ============ TRUE / FALSE ============
+const tfData = { tf1: { answer: true } };
+
+function checkTF(btn, qId, userAnswer){
+  const block = document.getElementById(qId);
+  if(!block) return;
+  if(block.dataset.done === '1') return;
+  block.dataset.done = '1';
+
+  const cfg = tfData[qId];
+  if(!cfg) return;
+  const isRight = userAnswer === cfg.answer;
+  const btns = block.querySelectorAll('.tf-btn');
+  btns.forEach(b => { b.disabled = true; b.style.cursor = 'default'; });
+  btn.classList.add(isRight ? 'right' : 'wrong');
+  if(!isRight){
+    btns.forEach(b => {
+      if(b !== btn) b.classList.add('right');
+    });
+  }
+  const ex = document.getElementById(qId + '-explain');
+  if(ex) ex.classList.add('vis');
+  if(isRight) addPoints(qId, 1);
+}
+
+// ============ MATCH GAME ============
+let matchSelected = null;
+let matchedCount = 0;
+const matchTotal = 3;
+
+function selectMatch(el){
+  if(el.classList.contains('matched')) return;
+  if(!matchSelected){
+    document.querySelectorAll('.match-item.selected').forEach(i => i.classList.remove('selected'));
+    el.classList.add('selected');
+    matchSelected = el;
+    return;
+  }
+  if(el === matchSelected){
+    el.classList.remove('selected');
+    matchSelected = null;
+    return;
+  }
+  const a = matchSelected;
+  const b = el;
+  if(a.dataset.match === b.dataset.match && a !== b){
+    a.classList.add('matched');
+    b.classList.add('matched');
+    a.classList.remove('selected');
+    matchedCount++;
+    addPoints('match-' + matchedCount, 1);
+    const status = document.getElementById('match-status');
+    if(matchedCount === matchTotal){
+      status.textContent = "All three matched (+3 pts). You're reading the personas.";
+      status.classList.add('complete');
+    } else {
+      status.textContent = matchedCount + ' / ' + matchTotal + ' matched · +' + matchedCount + ' pt' + (matchedCount > 1 ? 's' : '') + ' so far — keep going.';
+    }
+  } else {
+    a.classList.add('wrong');
+    b.classList.add('wrong');
+    setTimeout(() => {
+      a.classList.remove('wrong','selected');
+      b.classList.remove('wrong');
+    }, 600);
+  }
+  matchSelected = null;
+}
+
+// ============ INTERSECTION OBSERVER FADE ============
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      e.target.classList.add('in');
+    }
+  });
+}, { threshold: 0.10 });
+
+document.querySelectorAll('.fade').forEach(el => observer.observe(el));
+
+// ============ TOP NAV ACTIVE LINK ============
+const sectionIds = ['hero', 'section-1', 'section-2', 'section-3'];
+const navLinks = document.querySelectorAll('.nav-link');
+
+function updateActiveLink(){
+  const scrollY = window.scrollY + window.innerHeight * 0.30;
+  let activeId = 'hero';
+  sectionIds.forEach(id => {
+    const el = document.getElementById(id);
+    if(el && el.offsetTop <= scrollY){
+      activeId = id;
+    }
+  });
+  navLinks.forEach(l => l.classList.toggle('active', l.dataset.target === activeId));
+}
+window.addEventListener('scroll', updateActiveLink, {passive:true});
+updateActiveLink();
+
+// Initialize score display
+updateScore();
+</script>
+
+</body>
+</html>
